@@ -271,7 +271,11 @@
       </div>
       <div class="pm-actions">
         <button class="btn btn-success" onclick="exportPost()">⬇ Eksport (yüklə)</button>
+        <button class="btn btn-primary" onclick="publishToTikTok()">📤 TikTok-da dərc et</button>
         <button class="btn btn-danger" onclick="clearPost()">Təmizlə</button>
+      </div>
+      <div style="margin-top:12px;font-size:11px;color:#6b7280">
+        "TikTok-da dərc et": video (əgər seçilibsə) və açıqlama kopyalanır, TikTok yükləmə səhifəsi yeni tab-da açılır. TikTok-da hesabınıza daxil olun və yükləyin.
       </div>
       <div style="margin-top:12px;font-size:11px;color:#6b7280">
         Eksport: video faylı (əgər seçilibsə) və post məlumatları (caption, hashtag, parametrlər) ayrıca .txt faylı kimi yüklənir.
@@ -665,6 +669,29 @@ function exportPost(){
   document.body.appendChild(a); a.click(); document.body.removeChild(a);
   URL.revokeObjectURL(url);
   alert('Eksport tamamlandı: video (əgər seçilibsə) və post məlumatları (txt) yükləndi.');
+}
+function publishToTikTok(){
+  const f = document.getElementById('pmFile').files[0];
+  if (f){
+    const url = URL.createObjectURL(f);
+    const a = document.createElement('a');
+    a.href = url; a.download = f.name;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+  const caption = document.getElementById('pmCaption').value || '';
+  const tags = document.getElementById('pmTags').value || '';
+  const fullText = (caption + ' ' + tags).trim();
+  // copy to clipboard
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(fullText).then(()=>{}).catch(()=>{});
+    }
+  } catch(e){}
+  // open TikTok upload page
+  window.open('https://www.tiktok.com/upload?lang=az', '_blank');
+  // show instruction
+  alert('Eksport tamamlandı!\n\n1) Video faylı (əgər seçilibsə) yükləndi.\n2) Açıqlama + hashtag-lar kopyalandı (Ctrl+V ilə yapışdırın).\n3) TikTok yükləmə səhifəsi yeni tab-da açıldı.\n\nTikTok hesabınıza daxil olun, videoyu seçin və açıqlamanı yapışdırın, sonra "Post" düyməsinə basın.');
 }
 function clearPost(){
   document.getElementById('pmCaption').value = '';
